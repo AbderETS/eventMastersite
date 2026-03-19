@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1{
+            color:#007bff;
+        }
+        span{
+            color: black;
+        }                       
+        body{
+            font-family: Arial,sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin-top: 100px;
+        }        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form onsubmit="login(event)">
+      <h1>Event<span>MASTER</span></h1>
+      <h4>Connectez-vous</h4>
+        <fieldset>
+            <label for="email"> Courriel:</label><input id="email" type="email" required><br>
+            <label for="password">Mot de passe:</label><input id="password" type="password" required><br>
+        </fieldset>
+        <button type="submit" class="btn">Connexion</button>
+        <a href="pageconnexion.html" class="btn">Retour</a>
+        <p id="error"></p>
+    </form>
+    <script>
+        /*function login(event) {
+            event.preventDefault();
+
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value;
+            let error = document.getElementById("error");
+
+            error.textContent = "";
+
+    
+            if (email === "" || password === "") {
+                error.textContent = "Veuillez remplir tous les champs";
+                return;
+            }
+
+            fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erreur serveur");
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "evenements.html";
+                } else {
+                    error.textContent = data.message || "Email ou mot de passe incorrect";
+                }
+            })
+            .catch(() => {
+                error.textContent = "Impossible de contacter le serveur";
+            });
+        }*/
+        function login(event) {
+            event.preventDefault();
+
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value;
+            let error = document.getElementById("error");
+
+            error.textContent = "";
+
+            if (email === "" || password === "") {
+                error.textContent = "Veuillez remplir tous les champs";
+                return;
+            }
+
+            window.location.href = "accueil.html";
+        }   
+    </script>
+</body>
+</html>

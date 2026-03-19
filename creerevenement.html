@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un événement - E-TICKET</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+        span{
+            color: black;
+        }       
+
+        form {
+            background: white;
+            width: 450px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 12px;
+            margin-bottom: 5px;
+        }
+
+        input, textarea {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px 0 5px;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event<span>MASTER</span></h1>
+
+    <form onsubmit="creerEvenement(event)">
+        <h3>Créer un événement</h3>
+
+        <fieldset>
+            <label for="nomEvenement">Nom de l'événement</label>
+            <input type="text" id="nomEvenement" required>
+
+            <label for="dateEvenement">Date et heure</label>
+            <input type="datetime-local" id="dateEvenement" required>
+
+            <label for="adresse">Adresse</label>
+            <input type="text" id="adresse" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" rows="4" required></textarea>
+
+            <label for="prix">Prix ($)</label>
+            <input type="number" id="prix" min="0" step="0.01" required>
+
+            <label for="nombreTickets">Nombre de tickets</label>
+            <input type="number" id="nombreTickets" min="1" step="1" required>
+        </fieldset>
+
+        <button type="submit" class="btn">Créer</button>
+        <button type="button" class="btn" onclick="window.location.href='accueil.html'">Retour</button>
+
+        <p id="message"></p>
+    </form>
+
+    <script>
+        function creerEvenement(event) {
+            event.preventDefault();
+
+            let nomEvenement = document.getElementById("nomEvenement").value.trim();
+            let dateEvenement = document.getElementById("dateEvenement").value;
+            let adresse = document.getElementById("adresse").value.trim();
+            let description = document.getElementById("description").value.trim();
+            let prix = document.getElementById("prix").value;
+            let nombreTickets = document.getElementById("nombreTickets").value;
+            let message = document.getElementById("message");
+
+            message.textContent = "";
+            message.className = "";
+
+            if (
+                nomEvenement === "" ||
+                dateEvenement === "" ||
+                adresse === "" ||
+                description === "" ||
+                prix === "" ||
+                nombreTickets === ""
+            ) {
+                message.textContent = "Veuillez remplir tous les champs.";
+                message.className = "error";
+                return;
+            }
+
+            fetch("http://localhost/EventMASTER/eventMaster/api/event", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userID: 1,
+                    eventName: nomEvenement,
+                    eventDescription: description,
+                    eventDateTime: dateEvenement,
+                    eventAdress: adresse,
+                    eventNumberOfTicket: parseInt(nombreTickets),
+                    eventTicketPrice: parseFloat(prix)
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erreur serveur");
+                }
+                return response.json();
+            })
+            .then(data => {
+                message.textContent = "Événement créé avec succès.";
+                message.className = "success";
+            })
+            .catch(() => {
+                message.textContent = "Impossible de créer l'événement.";
+                message.className = "error";
+            });
+        }
+    </script>
+</body>
+</html>

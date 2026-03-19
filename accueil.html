@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulter les événements - E-TICKET</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        span{
+            color: black;
+        }               
+
+        h3 {
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 5px 30px 5px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .event-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+
+        .event-card h2 {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .event-card p {
+            margin: 8px 0;
+        }
+        .top-buttons{
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Event<span>MASTER</span></h1>
+    <h3>Consulter les événements</h3>
+    <div class="top-buttons">
+        <a href="creerevenement.html" class="btn">Créer un événement</a>
+        <a href="pageconnexion.html" class="btn">Deconnexion</a>
+    </div>    
+
+    <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Rechercher un événement..." 
+        onkeyup="searchEvent()"
+        style="padding:10px; width:60%; margin-bottom:20px;"
+    >
+    <div class="container">
+        <div class="event-card">
+            <h2>Festival de musique</h2>
+            <p><strong>Date :</strong> 2026-04-15 19:00</p>
+            <p><strong>Adresse :</strong> 123 Rue Sainte-Catherine, Montréal</p>
+            <p><strong>Description :</strong> Une soirée de musique live avec plusieurs artistes invités.</p>
+            <p><strong>Prix :</strong> 45.00 $</p>
+            <p><strong>Nombre de tickets :</strong> 200</p>
+        </div>
+
+        <div class="event-card">
+            <h2>Conférence Tech 2026</h2>
+            <p><strong>Date :</strong> 2026-05-10 09:30</p>
+            <p><strong>Adresse :</strong> Palais des congrès, Montréal</p>
+            <p><strong>Description :</strong> Une conférence sur les nouvelles tendances en technologie et innovation.</p>
+            <p><strong>Prix :</strong> 25.00 $</p>
+            <p><strong>Nombre de tickets :</strong> 150</p>
+        </div>
+
+        <div class="event-card">
+            <h2>Match caritatif</h2>
+            <p><strong>Date :</strong> 2026-06-01 14:00</p>
+            <p><strong>Adresse :</strong> Stade Olympique, Montréal</p>
+            <p><strong>Description :</strong> Événement sportif organisé pour une collecte de fonds.</p>
+            <p><strong>Prix :</strong> 15.00 $</p>
+            <p><strong>Nombre de tickets :</strong> 500</p>
+        </div>
+    </div>
+    <script>
+        function searchEvent() {
+            let input = document.getElementById("searchInput").value.toLowerCase();
+            let events = document.getElementsByClassName("event-card");
+
+            for (let i = 0; i < events.length; i++) {
+                let title = events[i].getElementsByTagName("h2")[0].textContent.toLowerCase();
+
+                if (title.includes(input)) {
+                    events[i].style.display = "block";
+                } else {
+                    events[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
