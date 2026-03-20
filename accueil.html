@@ -69,6 +69,15 @@
             margin-top: 20px;
             font-weight: bold;
         }
+        .btn-supprimer{
+            margin-top: 12px;
+            padding: 10px 16px;
+            background-color: crimson;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;     
+        }
     </style>
 </head>
 <body>
@@ -141,6 +150,7 @@
                             <p><strong>Adresse :</strong> ${event.eventAdress}</p>
                             <p><strong>Prix :</strong> ${event.eventTicketPrice} $</p>
                             <p><strong>Tickets :</strong> ${event.eventNumberOfTicket}</p>
+                            <button onclick="supprimerEvent(${event.eventID})" class="btn-supprimer">Supprimer</button>
                         `;
 
                         listeEvenements.appendChild(carte);
@@ -152,7 +162,32 @@
                 });
         }
         
+        function supprimerEvent(id) {
+            if (!confirm("Voulez-vous vraiment supprimer cet événement ?")) {
+                return;
+            } 
 
+            fetch(`http://localhost/EventMASTER/eventMaster/api/event/${id}`, {
+                method: "DELETE"
+            })
+            .then(async (response) => {
+                const text = await response.text();
+
+                if (!response.ok) {
+                    throw new Error("Erreur HTTP " + response.status + " : " + text);
+                }
+
+                return text ? JSON.parse(text) : {};
+            })
+            .then(() => {
+                document.getElementById("message").textContent = "Événement supprimé avec succès.";
+                chargerEvenements();
+            })
+            .catch((error) => {
+                console.error(error);
+                document.getElementById("message").textContent = "Impossible de supprimer l'événement.";
+            });
+        }
         chargerEvenements();
                
     </script>
