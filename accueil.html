@@ -35,32 +35,39 @@
             margin: 10px 5px 30px 5px;
         }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
-
-        .event-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: left;
-        }
-
-        .event-card h2 {
-            color: #007bff;
-            margin-top: 0;
-        }
-
-        .event-card p {
-            margin: 8px 0;
-        }
         .top-buttons{
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 20px;     
+        }
+        #listeEvenements {
+            max-width: 900px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .carte-evenement {
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .carte-evenement h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+
+        .carte-evenement p {
+            margin: 8px 0;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -80,41 +87,17 @@
         onkeyup="searchEvent()"
         style="padding:10px; width:60%; margin-bottom:20px;"
     >
-    <div class="container">
-        <div class="event-card">
-            <h2>Festival de musique</h2>
-            <p><strong>Date :</strong> 2026-04-15 19:00</p>
-            <p><strong>Adresse :</strong> 123 Rue Sainte-Catherine, Montréal</p>
-            <p><strong>Description :</strong> Une soirée de musique live avec plusieurs artistes invités.</p>
-            <p><strong>Prix :</strong> 45.00 $</p>
-            <p><strong>Nombre de tickets :</strong> 200</p>
-        </div>
+    <div id="message" class="message"></div>
+    <div id="listeEvenements"></div>    
 
-        <div class="event-card">
-            <h2>Conférence Tech 2026</h2>
-            <p><strong>Date :</strong> 2026-05-10 09:30</p>
-            <p><strong>Adresse :</strong> Palais des congrès, Montréal</p>
-            <p><strong>Description :</strong> Une conférence sur les nouvelles tendances en technologie et innovation.</p>
-            <p><strong>Prix :</strong> 25.00 $</p>
-            <p><strong>Nombre de tickets :</strong> 150</p>
-        </div>
-
-        <div class="event-card">
-            <h2>Match caritatif</h2>
-            <p><strong>Date :</strong> 2026-06-01 14:00</p>
-            <p><strong>Adresse :</strong> Stade Olympique, Montréal</p>
-            <p><strong>Description :</strong> Événement sportif organisé pour une collecte de fonds.</p>
-            <p><strong>Prix :</strong> 15.00 $</p>
-            <p><strong>Nombre de tickets :</strong> 500</p>
-        </div>
-    </div>
     <script>
+        
         function searchEvent() {
             let input = document.getElementById("searchInput").value.toLowerCase();
-            let events = document.getElementsByClassName("event-card");
+            let events = document.getElementsByClassName("carte-evenement");
 
             for (let i = 0; i < events.length; i++) {
-                let title = events[i].getElementsByTagName("h2")[0].textContent.toLowerCase();
+                let title = events[i].getElementsByTagName("h3")[0].textContent.toLowerCase();
 
                 if (title.includes(input)) {
                     events[i].style.display = "block";
@@ -123,6 +106,55 @@
                 }
             }
         }
+        
+        function chargerEvenements() {
+            const listeEvenements = document.getElementById("listeEvenements");
+            const message = document.getElementById("message");
+
+            fetch("http://localhost/EventMASTER/eventMaster/api/event")
+                .then(async (response) => {
+                    const text = await response.text();
+
+                    if (!response.ok) {
+                        throw new Error("Erreur HTTP " + response.status + " : " + text);
+                    }
+
+                    return JSON.parse(text);
+                })
+                .then((evenements) => {
+                    listeEvenements.innerHTML = "";
+                    message.textContent = "";
+
+                    if (!evenements || evenements.length === 0) {
+                        message.textContent = "Aucun événement disponible.";
+                        return;
+                    }
+
+                    evenements.forEach((event) => {
+                        const carte = document.createElement("div");
+                        carte.className = "carte-evenement";
+
+                        carte.innerHTML = `
+                            <h3>${event.eventName}</h3>
+                            <p><strong>Description :</strong> ${event.eventDescription}</p>
+                            <p><strong>Date :</strong> ${event.eventDateTime}</p>
+                            <p><strong>Adresse :</strong> ${event.eventAdress}</p>
+                            <p><strong>Prix :</strong> ${event.eventTicketPrice} $</p>
+                            <p><strong>Tickets :</strong> ${event.eventNumberOfTicket}</p>
+                        `;
+
+                        listeEvenements.appendChild(carte);
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+                    message.textContent = "Impossible de charger les événements.";
+                });
+        }
+        
+
+        chargerEvenements();
+               
     </script>
 </body>
 </html>
